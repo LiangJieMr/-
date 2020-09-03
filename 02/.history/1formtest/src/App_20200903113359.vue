@@ -3,8 +3,8 @@
     <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
     <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
     <Form></Form>
-    <router-link to="/">home</router-link>
-    <router-link to="/about">about</router-link>
+    <<router-link to="/home">home</router-link>
+    <<router-link to="/about">home</router-link>
     <router-view></router-view>
   </div>
 </template>

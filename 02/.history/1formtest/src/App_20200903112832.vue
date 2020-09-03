@@ -2,22 +2,19 @@
   <div id="app">
     <!-- <img alt="Vue logo" src="./assets/logo.png"> -->
     <!-- <HelloWorld msg="Welcome to Your Vue.js App"/> -->
-    <Form></Form>
-    <router-link to="/">home</router-link>
-    <router-link to="/about">about</router-link>
-    <router-view></router-view>
+    <!-- <Form></Form> -->
   </div>
 </template>
 
 <script>
 // import HelloWorld from './components/HelloWorld.vue'
-import Form from './components/form/input.vue'
+// import Form from './components/form/input.vue'
 
 export default {
   name: 'App',
   components: {
     // HelloWorld,
-    Form
+    // Form
   }
 }
 </script>
