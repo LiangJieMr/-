@@ -14,6 +14,16 @@ export default new Router({
       component: Home
     },
     {
+      path: '/3ce',
+      name: '3ce',
+      component: () => import('./views/3ce.vue')
+    },
+    {
+      path: '/aaa',
+      name: 'aaa',
+      component: () => import('./views/aaa.vue')
+    },
+    {
       path: '/abc',
       name: 'abc',
       component: () => import('./views/ABC.vue')
