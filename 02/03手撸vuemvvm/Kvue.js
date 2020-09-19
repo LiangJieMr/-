@@ -1,11 +1,24 @@
+/*
+ * @Author: 梁杰
+ * @Date: 2020-09-04 21:52:53
+ * @LastEditors: 梁杰
+ * @LastEditTime: 2020-09-05 11:49:02
+ * @Description: 
+ */
 function defineReactive(obj, key, val) {
     //递归
     observe(val)
+
+
+    //创建dep与当前key一一对应
+    const dep = new Dep()
 
     //对传入的obj进行访问拦截
     Object.defineProperty(obj, key, {
         get() {
             console.log('get ' + key);
+            //依赖收集在这里
+            Dep.target && dep.addDep(Dep.target)
             return val;
         },
         set(newVal) {
@@ -14,6 +27,10 @@ function defineReactive(obj, key, val) {
                 //如果新值为对象 再次递归
                 observe(newVal)
                 val = newVal;
+
+                //
+                // watchers.forEach(w => w.updata())
+                dep.notify()
             }
         }
     })
@@ -74,5 +91,43 @@ class Observer {
         Object.keys(obj).forEach(key => {
             defineReactive(obj, key, obj[key])
         })
+    }
+}
+
+//观察者：保存更新函数，值发生变化调用更新函数
+// var watchers = []
+class Watcher {
+    constructor(vm, key, updatefn) {
+        this.vm = vm;
+        
+        this.key = key;
+
+        this.updatafn = updatefn;
+
+        // watchers.push(this)
+        
+        //Dep.target静态属性设置为当前watcher实例
+        Dep.target = this;
+        this.vm[this.key]//读取出发getter
+        Dep.target = null;//制空
+    }
+
+    updata() {
+        this.updatafn.call(this.vm, this.vm[this.key])
+    }
+}
+
+//Dep：依赖，管理相关watcher实例
+class Dep {
+    constructor() {
+        this.deps = [];
+    }
+
+    addDep(dep) {
+        this.deps.push(dep);
+    }
+
+    notify() {
+        this.deps.forEach(dep => dep.updata())
     }
 }

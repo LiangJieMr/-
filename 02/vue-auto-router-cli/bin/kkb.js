@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+console.log('11')
 const program = require('commander')
 const { resolve } = require('path')
 program.version(require('../package').version)

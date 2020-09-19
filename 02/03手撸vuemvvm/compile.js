@@ -1,3 +1,10 @@
+/*
+ * @Author: 梁杰
+ * @Date: 2020-09-04 21:52:53
+ * @LastEditors: 梁杰
+ * @LastEditTime: 2020-09-05 11:31:45
+ * @Description: 
+ */
 //编译器
 //递归遍历dom树
 //判断节点类型，如果是文本，则判断是否是差值绑定
@@ -44,7 +51,8 @@ class Compiler {
     }
 
     compileText(node) {
-        node.textContent = this.$vm[RegExp.$1]
+        // node.textContent = this.$vm[RegExp.$1/]
+        this.updata(node, RegExp.$1, 'text')
     }
 
     compileElement(node) {
@@ -56,7 +64,7 @@ class Compiler {
             const attrName = attr.name// k-xx
             const exp = attr.value // oo 
             if (this.isDirective(attrName)) {
-                const dir = attrName.substring(2)//xx
+                const dir = attrName.substring(2) //xx
                 //执行指令
                 this[dir] && this[dir](node, exp)
             }
@@ -67,13 +75,34 @@ class Compiler {
         return attr.indexOf('k-') == '0'
     }
 
+    updata(node, exp, dir) {
+        //初始化
+        //指令对应的更新函数xxUpdater
+        const fn = this[dir+'Updater']
+        fn && fn(node, this.$vm[exp])
+
+        //更新处理 封装一个更新函数，可以更新对应dom
+        new Watcher(this.$vm, exp, function(val) {
+            fn && fn(node, val)
+        })
+    }
+    textUpdater(node, value){
+        node.textContent = value
+    }
+
     //k-text
     text(node, exp) {
-        node.textContent = this.$vm[exp]
+        // node.textContent = this.$vm[exp]
+        this.updata(node, exp, 'text')
     }
 
     //k-html
     html(node, exp) {
-        node.innerHTML = this.$vm[exp]
+        // node.innerHTML = this.$vm[exp]
+        this.updata(node, exp, 'html')
+    }
+
+    htmlUpdater(node, value){
+        node.innerHTML = value
     }
 }

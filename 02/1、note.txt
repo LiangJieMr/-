@@ -17,3 +17,7 @@ $parent.$emit() 派发
 
 sync v-mode;
 一个组件可以多个属性用.sync修饰符，可以同时"双向绑定多个“prop”，而并不像v-model那样，一个组件只能有一个。
+
+
+vue源码解析
+https://processon.com/view/link/5d1eb5a0e4b0fdb331d3798c#map
