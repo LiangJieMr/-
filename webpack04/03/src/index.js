@@ -7,12 +7,26 @@
  * import   es module
  */
 // import { add } from "./other.js"; // es module
-import 'font-awesome/css/font-awesome.css'
+// import 'font-awesome/css/font-awesome.css'
 import css from "./css/index.less";
+// import axios from "axios";
+// axios.get('/api/info').then(res => {
+//     console.log(res)
+// })
 // import pic from "./image/logo.jpg";
 
+var btn = document.createElement("button");
+btn.innerHTML = "新增";
+document.body.appendChild(btn);
+
+btn.onclick = function() {
+    var div = document.createElement("div");
+    div.innerHTML = "item";
+    document.body.appendChild(div);
+}
+
 // let ele = `<div class=${css.ele}>css module</div>`;
-console.log("123")
+// console.log("123")
 // var img = new Image();
 // pic为图片路径
 // img.src = pic;

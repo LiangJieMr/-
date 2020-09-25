@@ -5,7 +5,9 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 // 清除冗余文件
 const {CleanWebpackPlugin} = require("clean-webpack-plugin");
+// css模块文件
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const webpack = require("webpack");
 module.exports = {
     //上下文
     // context: "",
@@ -21,7 +23,7 @@ module.exports = {
         //构建文件资源目录  
         //必须是绝对路径
         //__dirname当前路径的绝对路径
-        path: path.resolve(__dirname, "./build"),
+        path: path.resolve(__dirname, "./dist"),
         //构建文件名称
         // filename: "index.js",
         // 单出口 多出口 都推荐使用占位符
@@ -43,15 +45,15 @@ module.exports = {
     // 处理 不认识的模块
     module: {
         rules: [
-            {
-                test: /\.(eot|svg|ttf|woff|woff2)$/,
-                use: {
-                    loader: "file-loader",
-                    options: {
-                        outputPath: "font/",
-                    }
-                }
-            },
+            // {
+            //     test: /\.(eot|svg|ttf|woff|woff2)$/,
+            //     use: {
+            //         loader: "file-loader",
+            //         options: {
+            //             outputPath: "font/",
+            //         }
+            //     }
+            // },
             {
                 test: /\.css$/,
                 //loader 模块转换 执行顺序从后往前 本质普通函数
@@ -123,12 +125,34 @@ module.exports = {
     devtool: "cheap-module-eval-source-map",
     devServer: {
         // 资源打开目录 可以是相对路径
-        contentBase: path.resolve(__dirname, "./build"),
+        contentBase: path.resolve(__dirname, "./dist"),
         // 自动打开默认浏览器窗口
         open: true,
+        // HOT Module Replacement(HMR:热模块替换) :之前操作过的保留
+        hot: true,
+        // 代理
+        proxy: {
+            "/api": {
+                // 正向代理
+                target: "http://localhost:9092"
+            }
+        },
+        // before after 为devserver提供的中间件hooks/钩子
+        // 加载内容中间件之前 mock server
+        before(app, server){
+            app.get("/api/mock.json", (req, res) => {
+                res.json({
+                    hello:"express",
+                })
+            })
+        },
+        // 加载内容中间件之后
+        // after(){
+
+        // },
         port: 8080,
     },
-    //插件 原理作用于webpack整个打包周期的 本质类
+    // 插件 原理作用于webpack整个打包周期的 本质类
     plugins: [
         new CleanWebpackPlugin(),
         new MiniCssExtractPlugin({
@@ -141,6 +165,7 @@ module.exports = {
                 template: "./src/index.html",
                 filename: "index.html"
             }
-        )
+        ),
+        new webpack.HotModuleReplacementPlugin(),
     ],
 }
