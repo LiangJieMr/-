@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 console.log('11')
 const program = require('commander')
-const { resolve } = require('path')
 program.version(require('../package').version)
 
 program
@@ -13,5 +12,9 @@ program
     .command('refresh')
     .description('refresh')
     .action(require('../lib/refresh'))
+program
+    .command('serve')
+    .description('serve')
+    .action(require('../lib/serve'))    
 program.parse(process.argv)
 

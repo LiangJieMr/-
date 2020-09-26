@@ -1,5 +1,0 @@
-class VueRouter {
-    constructor(options) {
-        
-    }
-}
