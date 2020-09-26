@@ -67,8 +67,8 @@ module.exports = {
                 test: /\.less$/,
                 use: [
                     //提取css独立文件
-                    MiniCssExtractPlugin.loader,
-                    // "style-loader", 
+                   // MiniCssExtractPlugin.loader, // 对hmr支持不好
+                     "style-loader", 
                     {
                         loader: "css-loader",
                         options: {//参数
@@ -111,6 +111,13 @@ module.exports = {
                         limit: 30 * 1024,// 单位是字节 1024=1kb
                     }
                 }
+            },
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: "babel-loader", // webpack与babel桥梁
+                }
             }
         ]
     },
@@ -122,7 +129,7 @@ module.exports = {
     // source-map生成map文件，inline-source-map添加到bandoule文件
     // 开发模式推荐 cheap-module-eval-source-map
     // 线上不推荐开启 cheap-module-source-map
-    devtool: "cheap-module-eval-source-map",
+    devtool: "cheap-inline -source-map",
     devServer: {
         // 资源打开目录 可以是相对路径
         contentBase: path.resolve(__dirname, "./dist"),
@@ -130,6 +137,8 @@ module.exports = {
         open: true,
         // HOT Module Replacement(HMR:热模块替换) :之前操作过的保留
         hot: true,
+        // 即便hmr没有生效 也不要刷新浏览器
+        hotOnly: true,
         // 代理
         proxy: {
             "/api": {
@@ -155,9 +164,9 @@ module.exports = {
     // 插件 原理作用于webpack整个打包周期的 本质类
     plugins: [
         new CleanWebpackPlugin(),
-        new MiniCssExtractPlugin({
-            filename: 'css/[name].css',
-        }),
+        // new MiniCssExtractPlugin({
+        //     filename: 'css/[name].css',
+        // }),
         new HtmlWebpackPlugin(
             {
                 // 选择html模板

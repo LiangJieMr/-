@@ -1,3 +1,25 @@
+/*
+ * @Author: 梁杰
+ * @Date: 2020-09-26 16:59:28
+ * @LastEditors: 梁杰
+ * @LastEditTime: 2020-09-26 18:37:01
+ * @Description: 
+ */
+import React, { Component } from "react";
+import ReactDom from "react-dom";
+class App extends Component {
+ render() {
+ return <div>hello world</div>;
+ }
+}
+ReactDom.render(<App />, document.getElementById("app"));
+// import "@babel/polyfill"
+// const arr = [new Promise(() => {}), new Promise(() => {})];
+
+// arr.map(item => {
+//  console.log(item);
+// });
+// 给垫片瘦身，实现按需加载 减少冗余
 // 模块化开发 当前流行的单页面入口应用 spa
 /**
  * 引入模块 形成依赖
@@ -8,22 +30,22 @@
  */
 // import { add } from "./other.js"; // es module
 // import 'font-awesome/css/font-awesome.css'
-import css from "./css/index.less";
+// import css from "./css/index.less";
 // import axios from "axios";
 // axios.get('/api/info').then(res => {
 //     console.log(res)
 // })
 // import pic from "./image/logo.jpg";
 
-var btn = document.createElement("button");
-btn.innerHTML = "新增";
-document.body.appendChild(btn);
+// var btn = document.createElement("button");
+// btn.innerHTML = "新增";
+// document.body.appendChild(btn);
 
-btn.onclick = function() {
-    var div = document.createElement("div");
-    div.innerHTML = "item";
-    document.body.appendChild(div);
-}
+// btn.onclick = function() {
+//     var div = document.createElement("div");
+//     div.innerHTML = "item";
+//     document.body.appendChild(div);
+// }
 
 // let ele = `<div class=${css.ele}>css module</div>`;
 // console.log("123")
@@ -39,3 +61,14 @@ btn.onclick = function() {
  * webpack 默认配置
  * 1.webpack执行构建会找 webpack.config.js 这个配置文件
  */
+
+// import counter from "./counter";
+// import number from "./number";
+// counter();
+// number();
+// if (module.hot) {
+//     module.hot.accept("./number", function () {
+//         document.body.removeChild(document.getElementById("number"));
+//         number();
+//     });
+// }
