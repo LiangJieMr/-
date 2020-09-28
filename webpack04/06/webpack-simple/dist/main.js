@@ -1,0 +1,3 @@
+(funciton(graph){
+            
+        })([object Object])
