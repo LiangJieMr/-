@@ -2,7 +2,7 @@
  * @Author: 梁杰
  * @Date: 2020-09-28 23:07:23
  * @LastEditors: 梁杰
- * @LastEditTime: 2020-09-29 00:06:48
+ * @LastEditTime: 2020-09-29 00:02:21
  * @Description: 配置
  */
 const fs = require("fs");
@@ -83,7 +83,6 @@ module.exports = class webpack {
         const bundle = `(funciton(graph){
             
         })(${code})`
-        // 写入文件main.js
         fs.writeFileSync(filePath, bundle, "utf-8");
     }
 }
