@@ -1,10 +1,15 @@
 /*
  * @Author: 梁杰
  * @Date: 2020-09-27 22:24:48
- * @LastEditors: 梁杰
- * @LastEditTime: 2020-09-27 23:14:41
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2020-09-28 10:37:55
  * @Description: 
  */
+import str from "./hello.js";
+console.log(str)
+// import _ from "lodash";
+
+// console.log(_.join(["a", "b", "c"], "****"))
 // import React, { Component } from "react";
 // import ReactDom from "react-dom";
 // class App extends Component {
@@ -16,8 +21,8 @@
 // import "@babel/polyfill"
 // const arr = [new Promise(() => {}), new Promise(() => {})];
 
-import { add } from "./expo.js";
-add(1, 2)
+// import { add } from "./expo.js";
+// add(1, 2)
 
 // arr.map(item => {
 //  console.log(item);
@@ -33,7 +38,7 @@ add(1, 2)
  */
 // import { add } from "./other.js"; // es module
 // import 'font-awesome/css/font-awesome.css'
-import css from "./css/index.less";
+// import css from "./css/index.less";
 // console.log('test!!!!!!')
 // import axios from "axios";
 // const _ = require("lodash");

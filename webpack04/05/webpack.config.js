@@ -13,7 +13,19 @@ const OptimizeCssAssetsWebpackPlugin = require('optimize-css-assets-webpack-plug
 // 摇树
 const PurifyCSS = require("purifycss-webpack");
 const glob = require("glob-all");
-module.exports = {
+// speed-measure-webpack-plugin:可以测量各个插件和 loader 所花费的时间
+const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
+const smp = new SpeedMeasurePlugin();
+// webpack-bundle-analyzer:分析webpack打包后的模块依赖关系：
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+// 提供中间缓存
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
+// 使⽤happypack并发执⾏任务 电脑来判断几核的，几个进程
+const HappyPack = require('happypack');
+const happypack = require("happypack");
+const happyThreadPool = HappyPack.ThreadPool({ size: os.cpus().length })
+// const config = {
+module.exports={
     //上下文
     // context: "",
     //入口文件 项目入口 字符串 数组 对象
@@ -45,7 +57,7 @@ module.exports = {
         // publicPath:'http://cdn.jie.com/assets' //资源路径 cdn 需手动上传cdn
     },
     // 构建模式 none production development
-    mode:"production",
+    mode:"development",
 
     
     // 处理 不认识的模块
@@ -73,30 +85,32 @@ module.exports = {
                 //css in js方式
 
                 //style-loader从js中提取css的loader 在html中创建style标签
-                use: ["style-loader", "css-loader"],
+                // use: ["style-loader", "css-loader"],
+                use: ["happypack/loader?id=css"],
             },
             {
                 test: /\.less$/,
                 include: path.resolve(__dirname, "./src"),
                 use: [
+                    "happypack/loader?id=less"
                     //提取css独立文件
-                    MiniCssExtractPlugin.loader, // 对hmr支持不好
-                    //  "style-loader", 
-                    {
-                        loader: "css-loader",
-                        options: {//参数
-                            //css modules 模块化
-                            modules: true
-                        }
-                    },
-                    {
-                        //需使用 "postcss-loader": "^3.0.0",
-                        //"autoprefixer": "^9.7.6",
-                        //否则有版本问题 
-                        // css前缀
-                        loader: "postcss-loader",
-                    },
-                    "less-loader"
+                    // MiniCssExtractPlugin.loader, // 对hmr支持不好
+                    // //  "style-loader", 
+                    // {
+                    //     loader: "css-loader",
+                    //     options: {//参数
+                    //         //css modules 模块化
+                    //         modules: true
+                    //     }
+                    // },
+                    // {
+                    //     //需使用 "postcss-loader": "^3.0.0",
+                    //     //"autoprefixer": "^9.7.6",
+                    //     //否则有版本问题 
+                    //     // css前缀
+                    //     loader: "postcss-loader",
+                    // },
+                    // "less-loader"
                 ]
             },
             {
@@ -113,17 +127,18 @@ module.exports = {
                 test: /\.(png|jpe?g|gif)$/,
                 include: path.resolve(__dirname, "./src"),
                 use: {
+                    loader: "happypack/loader?id=pic"
                     // loader: "file-loader",
-                    loader: "url-loader",
-                    options: {
-                        // name模块名称 pic
-                        // hash 长度
-                        // ext 后缀名
-                        name: "[name]_[hash:6].[ext]",
-                        outputPath: "images/",
-                        //推荐小体积的图片资源转为base64
-                        limit: 30 * 1024,// 单位是字节 1024=1kb
-                    }
+                    // loader: "url-loader",
+                    // options: {
+                    //     // name模块名称 pic
+                    //     // hash 长度
+                    //     // ext 后缀名
+                    //     name: "[name]_[hash:6].[ext]",
+                    //     outputPath: "images/",
+                    //     //推荐小体积的图片资源转为base64
+                    //     limit: 30 * 1024,// 单位是字节 1024=1kb
+                    // }
                 }
             },
             {
@@ -204,6 +219,23 @@ module.exports = {
     // js tree shaking 摇树 不依赖第三方插件
     optimization: {
         usedExports: true, // 哪些导出的模块被使用了,再做打包
+        splitChunks: {
+            chunks: "all", // 所有的 chunks 代码公共的部分分离出来成为⼀个单独的⽂件
+            //对同步 initial，异步 async，所有的模块有效 all
+            cacheGroups: { // 缓存分割
+                lodash: {
+                    test: /lodash/,
+                    name: "lodash"
+                },
+                react: {
+                    test: /react|react-dom/,
+                    name: "react"
+                }
+            }
+        },
+        // 作用域提升 Scope Hoisting
+        concatenateModules: true, // ）是指 webpack 通过 ES6 语法的静态分析，分析出模块之间的依赖关
+        //系，尽可能地把模块放到同⼀个函数中。
     },
     // 插件 原理作用于webpack整个打包周期的 本质类
     plugins: [
@@ -219,12 +251,24 @@ module.exports = {
                 path.resolve(__dirname, "./src/*.js")
             ])
         }),
+        new HappyPack({
+            id:"css",
+            loader: ["style-loader", "css-loader"]
+        }),
+        new HappyPack({
+            id:"js",
+            loader: ["babel-loader"]
+        }),
         // new OptimizeCssAssetsWebpackPlugin({
         //     cssProcessor: require("cssnano"), //引⼊cssnano配置压缩选项
         //     cssProcessorOptions: {
         //     discardComments: { removeAll: true }
         //     }
         // }),
+        // 引入链接库
+        new webpack.DllReferencePlugin({
+            manifest: path.resolve(__dirname,"./dll/react-manifest.json")
+        }),
         new HtmlWebpackPlugin(
             {
                 // 选择html模板
@@ -240,5 +284,9 @@ module.exports = {
             }
         ),
         new webpack.HotModuleReplacementPlugin(),
+        // new BundleAnalyzerPlugin(),
+        new HardSourceWebpackPlugin()
     ],
 }
+
+// module.exports = smp.wrap(config)
