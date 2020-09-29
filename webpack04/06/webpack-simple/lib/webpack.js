@@ -1,8 +1,8 @@
 /*
  * @Author: 梁杰
  * @Date: 2020-09-28 23:07:23
- * @LastEditors: 梁杰
- * @LastEditTime: 2020-09-29 00:02:21
+ * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2020-09-29 10:04:19
  * @Description: 配置
  */
 const fs = require("fs");
@@ -79,10 +79,21 @@ module.exports = class webpack {
             this.output.filename
         );
         console.log(filePath)
-
-        const bundle = `(funciton(graph){
-            
-        })(${code})`
+        //require()
+        const newCode = JSON.stringify(code);
+        const bundle = `(function(graph){
+            function require(module){
+                function reRequire(relativePath){
+                   return graph[module].dependencies[relativePath]
+                }
+                var exports = {};
+                (function(require,exports,code){
+                    eval(code)
+                })(reRequire,exports,graph[module].code)
+                return exports
+            }
+            require('${this.entry}')
+        })(${newCode})`
         fs.writeFileSync(filePath, bundle, "utf-8");
     }
 }
